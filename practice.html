@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <h1>My Anime Art collection shop</h1>
+        <h1>My Shooping List site and Anime Art collection shop</h1>
         <nav class="nav-bar">
             <ul>
                 <li><a href="#"><i class="fab fa-facebook"></i> </a></li>
@@ -20,8 +20,18 @@
                 <li><a href="#"><i class="fab fa-behance"></i> </a></li>
             </ul>
         </nav>
-    </header>  
+    </header> 
+    <div class="shopping-list-container">
+        <h1>Shopping List</h1>
+        <input type="text" id="itemInput" placeholder="Enter an item" />
+        <div>
+            <button id="addButton">Add</button>
+            <button id="clearButton">Clear List</button>
+        </div>
+        <ul id="shoppingList" class="shopping-list"></ul>
+    </div>
     <section id="product-section">
+        <h1>Anime Art collection shop</h1>
         <div id="product-container">
            <div id="product-card">
                 <img src="./img/img (1).jpg" alt="Art Piece 1" class="product-image">

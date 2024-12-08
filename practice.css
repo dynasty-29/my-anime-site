@@ -52,6 +52,51 @@ section {
 .nav-bar ul li a:hover{
     color: chartreuse;
 }
+/* --------------Shopping list sections---------------*/
+.shopping-list-container {
+    background-color: rgb(10, 87, 73);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#shoppingList {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    width: fit-content;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+#shoppingList li {
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+#itemInput {
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
 /* --------------Product sections---------------*/
 #product-section {
     background-color: rgb(40, 40, 70);

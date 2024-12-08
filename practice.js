@@ -1,67 +1,105 @@
-// Select necessary DOM elements
-const productContainer = document.querySelector("#product-container");
-const clearCartBtn = document.createElement("button");
-clearCartBtn.innerText = "Clear Cart";
-clearCartBtn.className = "clear-cart-btn";
-document.body.appendChild(clearCartBtn);
+// Shopping List Functionality
+document.getElementById("addButton").addEventListener("click", () => {
+    const input = document.getElementById("itemInput");
+    const list = document.getElementById("shoppingList");
 
-// Initialize cart array
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (input.value.trim() !== "") {
+        const li = document.createElement("li");
+        li.textContent = input.value;
+        li.addEventListener("click", () => li.remove()); // Remove item on click
+        list.appendChild(li);
+        input.value = "";
+    }
+});
 
-// Function to update the cart in localStorage
-function updateCartStorage() {
-    localStorage.setItem("cart", JSON.stringify(cart));
-}
+document.getElementById("clearButton").addEventListener("click", () => {
+    document.getElementById("shoppingList").innerHTML = ""; // Clear the list
+});
 
-// Function to display a confirmation message
-function showConfirmationMessage(messageElement, message) {
-    messageElement.innerText = message;
-    messageElement.style.color = "green";
-    setTimeout(() => {
-        messageElement.innerText = "";
-    }, 2000);
-}
+// Cart Management for Anime Art Collection
+const cart = [];
 
-// Add event listener to "Add to Cart" buttons
-productContainer.addEventListener("click", (event) => {
-    if (event.target.classList.contains("add-to-cart")) {
-        const productCard = event.target.closest("#product-card");
-        const productName = productCard.querySelector(".product-name").innerText;
-        const productPrice = productCard.querySelector(".product-price").innerText;
-        const quantityInput = productCard.querySelector(".quantity-input");
-        const quantity = parseInt(quantityInput.value) || 1;
+document.querySelectorAll(".add-to-cart").forEach((button, index) => {
+    button.addEventListener("click", (e) => {
+        const card = e.target.closest("#product-card");
+        const productName = card.querySelector(".product-name").textContent;
+        const productPrice = parseFloat(card.querySelector(".product-price").textContent.replace("¥", ""));
+        const quantity = parseInt(card.querySelector(".quantity-input").value);
 
-        // Add to cart
-        const existingProduct = cart.find((item) => item.name === productName);
-        if (existingProduct) {
-            existingProduct.quantity += quantity;
+        if (quantity > 0) {
+            const confirmation = card.querySelector(".confirmation-message");
+            confirmation.textContent = `Arigatu! your art has been added ${quantity}x ${productName} to cart!`;
+            setTimeout(() => (confirmation.textContent = ""), 2000);
+
+            // Update cart
+            const product = cart.find((item) => item.name === productName);
+            if (product) {
+                product.quantity += quantity;
+            } else {
+                cart.push({ name: productName, price: productPrice, quantity });
+            }
+
+            updateChart(); 
         } else {
-            cart.push({
-                name: productName,
-                price: productPrice,
-                quantity: quantity,
-            });
+            alert("Please enter a valid quantity!");
         }
+    });
+});
 
-        // Update localStorage
-        updateCartStorage();
+// Chart Visualization for Product Popularity
+function updateChart() {
+    const productNames = cart.map((item) => item.name);
+    const productQuantities = cart.map((item) => item.quantity);
 
-        // Show confirmation
-        const confirmationMessage = productCard.querySelector(".confirmation-message");
-        showConfirmationMessage(confirmationMessage, "Arigatu!, your art has been added to cart!");
+    const canvas = document.getElementById("popularityChart");
+    if (!canvas) {
+        createChartCanvas();
+    } else {
+        renderChart(productNames, productQuantities);
     }
-});
+}
 
-// Add event listener to clear the cart
-clearCartBtn.addEventListener("click", () => {
-    cart = [];
-    updateCartStorage();
-    alert("Cart cleared!");
-});
+function createChartCanvas() {
+    const chartSection = document.createElement("section");
+    chartSection.id = "chart-section";
 
-// Bonus: Restore persisted cart items on page load (optional)
-document.addEventListener("DOMContentLoaded", () => {
-    if (cart.length > 0) {
-        console.log("Cart restored:", cart);
-    }
-});
+    const canvas = document.createElement("canvas");
+    canvas.id = "popularityChart";
+    canvas.width = 800;
+    canvas.height = 400;
+
+    chartSection.appendChild(canvas);
+    document.body.appendChild(chartSection);
+
+    renderChart([], []);
+}
+
+function renderChart(labels, data) {
+    const ctx = document.getElementById("popularityChart").getContext("2d");
+    if (window.popularityChart) {
+        window.popularityChart.destroy(); 
+
+    window.popularityChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: "Quantity Sold",
+                    data,
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+}
